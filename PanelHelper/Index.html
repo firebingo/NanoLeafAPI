@@ -1,0 +1,23 @@
+<html>
+  <body>
+    <script src="Helper.js"></script>
+    <div>
+      <div>
+        <label>ip: </label>
+        <input id="ip" />
+      </div>
+      <div>
+        <label>token: </label>
+        <input id="token" />
+      </div>
+      <button onclick="onGetClicked()">Get</button>
+    </div>
+    <canvas id="pointCanvas"></canvas>
+  </body>
+  <div>
+    <div>
+      <label>adjust angle: </label>
+      <input id="adjust" type="number" oninput="onAdjustInput(this.value)" />
+    </div>
+  </div>
+</html>

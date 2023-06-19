@@ -158,10 +158,6 @@ namespace NanoLeafAPI
 
 		public async Task StopExternalControl()
 		{
-			_extControlSocket.Dispose();
-			_extControlSocket = null;
-			_extControlEndpoint = null;
-
 			var setState = new SetState()
 			{
 				//On = _preExtState.On,
@@ -190,6 +186,10 @@ namespace NanoLeafAPI
 			}
 			await SetState(setState);
 			_preExtState = null;
+
+			_extControlSocket?.Dispose();
+			_extControlSocket = null;
+			_extControlEndpoint = null;
 		}
 
 		public async Task SendExternalControlFrame(ExtControlFrame frame)
