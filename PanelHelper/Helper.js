@@ -42,6 +42,8 @@ function drawPoints() {
   for (const p of panels) {
     const x = p.x * c - p.y * s;
     const y = p.x * s + p.y * c;
+	p.x = x;
+	p.y = y;
     if (p.x < minX) minX = p.x;
     if (p.y < minY) minY = p.y;
   }
