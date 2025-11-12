@@ -151,7 +151,7 @@ namespace NanoLeafAPI
 			_extControlSocket?.Dispose();
 			_extControlSocket = new Socket(_extControlIp.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
 			_extControlEndpoint = new IPEndPoint(_extControlIp, _extControlPort);
-			_extControlStream = new List<byte>();
+			_extControlStream = [];
 
 			return true;
 		}
@@ -216,7 +216,7 @@ namespace NanoLeafAPI
 		{
 			var bytes = BitConverter.GetBytes(value);
 			//Nanoleaf wants 2 byte values in big endian
-			return BitConverter.IsLittleEndian ? bytes.Reverse().ToArray() : bytes;
+			return BitConverter.IsLittleEndian ? [.. bytes.Reverse()] : bytes;
 		}
 
 		public void Dispose()
