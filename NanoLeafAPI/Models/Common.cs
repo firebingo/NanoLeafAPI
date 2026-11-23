@@ -18,6 +18,7 @@ namespace NanoLeafAPI.Models
 	{
 		[JsonPropertyName("value")]
 		public int Value { get; set; }
+
 		[JsonPropertyName("duration")]
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 		public int? Duration { get; set; }
@@ -27,8 +28,10 @@ namespace NanoLeafAPI.Models
 	{
 		[JsonPropertyName("value")]
 		public int Value { get; set; }
+
 		[JsonPropertyName("max")]
 		public int Max { get; set; }
+
 		[JsonPropertyName("min")]
 		public int Min { get; set; }
 	}
@@ -37,8 +40,10 @@ namespace NanoLeafAPI.Models
 	{
 		[JsonPropertyName("x")]
 		public int X { get; set; }
+
 		[JsonPropertyName("y")]
 		public int Y { get; set; }
+
 		[JsonPropertyName("o")]
 		public int O { get; set; }
 	}

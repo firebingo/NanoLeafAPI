@@ -5,12 +5,8 @@ namespace NanoLeafAPI.Models
 {
 	public class PanelLayout
 	{
-		[JsonPropertyName("layout")]
-		public Layout Layout { get; set; }
-		[JsonPropertyName("globalOrientation")]
-		public ValueMinMix GlobalOrientation { get; set; }
 		[JsonIgnore]
-		public static readonly Dictionary<PanelShape, float> SideLengths = new Dictionary<PanelShape, float>()
+		public static readonly Dictionary<PanelShape, float> SideLengths = new Dictionary<PanelShape, float>
 		{
 			{ PanelShape.Triangle, 150 },
 			{ PanelShape.Rhythm, 0 },
@@ -29,14 +25,22 @@ namespace NanoLeafAPI.Models
 			{ PanelShape.ControllerCap, 11 },
 			{ PanelShape.PowerConnector, 11 }
 		};
+
+		[JsonPropertyName("layout")]
+		public Layout Layout { get; set; }
+
+		[JsonPropertyName("globalOrientation")]
+		public ValueMinMix GlobalOrientation { get; set; }
 	}
 
 	public class Layout
 	{
 		[JsonPropertyName("numPanels")]
 		public int NumPanels { get; set; }
+
 		[JsonPropertyName("sideLength")]
 		public int SideLength { get; set; }
+
 		[JsonPropertyName("positionData")]
 		public List<PanelPosition> Positions { get; set; }
 	}
@@ -45,6 +49,7 @@ namespace NanoLeafAPI.Models
 	{
 		[JsonPropertyName("panelId")]
 		public ushort PanelID { get; set; }
+
 		[JsonPropertyName("shapeType")]
 		public PanelShape PanelShape { get; set; }
 	}

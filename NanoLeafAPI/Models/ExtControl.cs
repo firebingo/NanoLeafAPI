@@ -7,34 +7,38 @@ namespace NanoLeafAPI.Models
 	{
 		[JsonPropertyName("command")]
 		public string Command { get; set; }
+
 		[JsonPropertyName("animType")]
 		public string AnimType { get; set; }
+
 		[JsonPropertyName("extControlVersion")]
 		public string ExtControlVersion { get; set; }
 	}
 
 	internal class WriteExtControl
 	{
-		[JsonPropertyName("write")]
-		public WriteCommandExt Write { get; set; }
-
 		internal WriteExtControl()
 		{
-			Write = new WriteCommandExt()
+			Write = new WriteCommandExt
 			{
 				Command = "display",
 				AnimType = "extControl",
 				ExtControlVersion = "v2"
 			};
 		}
+
+		[JsonPropertyName("write")]
+		public WriteCommandExt Write { get; set; }
 	}
 
 	internal class ExtControlResponse
 	{
 		[JsonPropertyName("streamControlIpAddr")]
 		public string StreamControlIpAddress { get; set; }
+
 		[JsonPropertyName("streamControlPort")]
 		public string StreamControlPort { get; set; }
+
 		[JsonPropertyName("streamControlProtocol")]
 		public string StreamControlProtocol { get; set; }
 	}

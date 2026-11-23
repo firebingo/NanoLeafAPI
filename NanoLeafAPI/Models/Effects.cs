@@ -7,6 +7,7 @@ namespace NanoLeafAPI.Models
 	{
 		[JsonPropertyName("select")]
 		public string Select { get; set; }
+
 		[JsonPropertyName("effectsList")]
 		public List<string> EffectsList { get; set; }
 	}

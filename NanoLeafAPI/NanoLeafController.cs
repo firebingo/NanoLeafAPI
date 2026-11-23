@@ -1,29 +1,27 @@
-﻿using NanoLeafAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using NanoLeafAPI.Models;
 
 namespace NanoLeafAPI
 {
 	public class NanoLeafController : IDisposable
 	{
-		private bool _isDisposed;
-		private IPAddress _extControlIp;
-		private ushort _extControlPort = 60222;
-		private Socket _extControlSocket;
-		private IPEndPoint _extControlEndpoint;
-		private State _preExtState;
-		private List<byte> _extControlStream;
+		private readonly ushort _extControlPort = 60222;
 
 		private readonly HttpClient _httpClient;
-		public IPAddress IP { get; }
-		public ushort Port { get; } = 16021;
-		public string AuthToken { get; private set; }
+		private IPEndPoint _extControlEndpoint;
+		private IPAddress _extControlIp;
+		private Socket _extControlSocket;
+		private List<byte> _extControlStream;
+		private bool _isDisposed;
+		private State _preExtState;
 
 		public NanoLeafController(string ip)
 		{
@@ -77,6 +75,16 @@ namespace NanoLeafAPI
 			AuthToken = authToken;
 		}
 
+		public IPAddress IP { get; }
+		public ushort Port { get; } = 16021;
+		public string AuthToken { get; private set; }
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
 		public async Task<string> GetNewToken()
 		{
 			using var newRes = await _httpClient.PostAsync("/api/v1/new", null);
@@ -113,10 +121,10 @@ namespace NanoLeafAPI
 		public async Task SetState(SetState state)
 		{
 			if (state == null)
-				throw new ArgumentException($"Null state");
+				throw new ArgumentException("Null state");
 
 			var stringState = JsonSerializer.Serialize(state);
-			using var content = new StringContent(stringState, System.Text.Encoding.UTF8, "application/json");
+			using var content = new StringContent(stringState, Encoding.UTF8, "application/json");
 			content.Headers.ContentType.CharSet = "";
 			var putRes = await _httpClient.PutAsync($"/api/v1/{AuthToken}/state", content);
 			var s = await putRes.Content?.ReadAsStringAsync();
@@ -126,9 +134,9 @@ namespace NanoLeafAPI
 
 		public async Task SelectEffect(string effect)
 		{
-			var setValue = new Select() { Value = effect };
+			var setValue = new Select { Value = effect };
 			var stringSelect = JsonSerializer.Serialize(setValue);
-			using var content = new StringContent(stringSelect, System.Text.Encoding.UTF8, "application/json");
+			using var content = new StringContent(stringSelect, Encoding.UTF8, "application/json");
 			var putRes = await _httpClient.PutAsync($"/api/v1/{AuthToken}/effects", content);
 			if (!putRes.IsSuccessStatusCode)
 				throw new Exception($"API Error: Code: {putRes.StatusCode}");
@@ -141,7 +149,7 @@ namespace NanoLeafAPI
 
 			var value = new WriteExtControl();
 			var stringValue = JsonSerializer.Serialize(value);
-			using var content = new StringContent(stringValue, System.Text.Encoding.UTF8, "application/json");
+			using var content = new StringContent(stringValue, Encoding.UTF8, "application/json");
 			var putRes = await _httpClient.PutAsync($"/api/v1/{AuthToken}/effects", content);
 			var stringRes = await putRes?.Content?.ReadAsStringAsync();
 			if (!putRes.IsSuccessStatusCode)
@@ -158,32 +166,33 @@ namespace NanoLeafAPI
 
 		public async Task StopExternalControl()
 		{
-			var setState = new SetState()
+			var setState = new SetState
 			{
 				//On = _preExtState.On,
-				Brightness = new ValueDuration()
+				Brightness = new ValueDuration
 				{
 					Value = _preExtState.Brightness.Value
 				}
 			};
 			if (_preExtState.ColorMode == "hs")
 			{
-				setState.Hue = new ValueInt()
+				setState.Hue = new ValueInt
 				{
 					Value = _preExtState.Hue.Value
 				};
-				setState.Saturation = new ValueInt()
+				setState.Saturation = new ValueInt
 				{
 					Value = _preExtState.Saturation.Value
 				};
 			}
 			else if (_preExtState.ColorMode == "ct")
 			{
-				setState.Temperature = new ValueInt()
+				setState.Temperature = new ValueInt
 				{
 					Value = _preExtState.Temperature.Value
 				};
 			}
+
 			await SetState(setState);
 			_preExtState = null;
 
@@ -217,12 +226,6 @@ namespace NanoLeafAPI
 			var bytes = BitConverter.GetBytes(value);
 			//Nanoleaf wants 2 byte values in big endian
 			return BitConverter.IsLittleEndian ? [.. bytes.Reverse()] : bytes;
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		protected virtual void Dispose(bool disposing)
